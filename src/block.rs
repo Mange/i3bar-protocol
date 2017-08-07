@@ -128,13 +128,15 @@ impl<'de> de::Visitor<'de> for MinWidthVisitor {
     }
 
     fn visit_u32<E>(self, value: u32) -> Result<MinWidth, E>
-        where E: de::Error
+    where
+        E: de::Error,
     {
         Ok(MinWidth::from(value))
     }
 
     fn visit_u64<E>(self, value: u64) -> Result<MinWidth, E>
-        where E: de::Error
+    where
+        E: de::Error,
     {
         if value > ::std::u32::MAX as u64 {
             Ok(MinWidth::from(::std::u32::MAX))
@@ -144,13 +146,15 @@ impl<'de> de::Visitor<'de> for MinWidthVisitor {
     }
 
     fn visit_str<E>(self, value: &str) -> Result<MinWidth, E>
-        where E: de::Error
+    where
+        E: de::Error,
     {
         Ok(MinWidth::from(value))
     }
 
     fn visit_string<E>(self, value: String) -> Result<MinWidth, E>
-        where E: de::Error
+    where
+        E: de::Error,
     {
         Ok(MinWidth::from(value))
     }
@@ -158,7 +162,8 @@ impl<'de> de::Visitor<'de> for MinWidthVisitor {
 
 impl<'de> Deserialize<'de> for MinWidth {
     fn deserialize<D>(deserializer: D) -> Result<MinWidth, D::Error>
-        where D: Deserializer<'de>
+    where
+        D: Deserializer<'de>,
     {
         deserializer.deserialize_any(MinWidthVisitor)
     }
@@ -166,11 +171,12 @@ impl<'de> Deserialize<'de> for MinWidth {
 
 impl Serialize for MinWidth {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
-        match self {
-            &MinWidth::Pixels(num) => serializer.serialize_u32(num),
-            &MinWidth::Example(ref str) => serializer.serialize_str(&str),
+        match *self {
+            MinWidth::Pixels(num) => serializer.serialize_u32(num),
+            MinWidth::Example(ref str) => serializer.serialize_str(str),
         }
     }
 }

@@ -62,7 +62,8 @@ pub struct ClickEventBuilder {
 
 impl ClickEventBuilder {
     pub fn new<S>(name: S, button: MouseButton) -> ClickEventBuilder
-        where S: Into<String>
+    where
+        S: Into<String>,
     {
         ClickEventBuilder {
             name: name.into(),
@@ -74,8 +75,9 @@ impl ClickEventBuilder {
     }
 
     pub fn instance<V, S>(mut self, value: V) -> Self
-        where V: Into<Option<S>>,
-              S: Into<String>
+    where
+        V: Into<Option<S>>,
+        S: Into<String>,
     {
         self.instance = value.into().map(Into::into);
         self
@@ -100,7 +102,7 @@ impl ClickEventBuilder {
 
 impl fmt::Display for ClickEvent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let string = serde_json::to_string(self).unwrap_or(String::from("{}"));
+        let string = serde_json::to_string(self).unwrap_or_else(|_| String::from("{}"));
         f.write_str(&string)
     }
 }

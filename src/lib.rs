@@ -37,10 +37,10 @@ impl fmt::Display for ParseError {
 
 impl Error for ParseError {
     fn description(&self) -> &str {
-        match self {
-            &ParseError::ReadError(ref s) => s,
-            &ParseError::JsonError(ref s) => s,
-            &ParseError::InvalidData(ref s) => s,
+        match *self {
+            ParseError::ReadError(ref s) |
+            ParseError::JsonError(ref s) |
+            ParseError::InvalidData(ref s) => s,
         }
     }
 }

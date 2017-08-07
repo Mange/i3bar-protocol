@@ -50,12 +50,13 @@ impl FromStr for Header {
 
 impl fmt::Display for Header {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let string = serde_json::to_string(self).unwrap_or(String::from(r#"{"version":1}"#));
+        let string =
+            serde_json::to_string(self).unwrap_or_else(|_| String::from(r#"{"version":1}"#));
         f.write_str(&string)
     }
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub struct HeaderBuilder {
     stop_signal: i32,
     continue_signal: i32,
