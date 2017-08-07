@@ -10,14 +10,17 @@ extern crate serde_json;
 
 //
 
-mod mouse_button;
-pub use mouse_button::MouseButton;
+mod enums;
+pub use enums::{MouseButton, Markup, Alignment};
 
 mod click_event;
 pub use click_event::{ClickEvent, ClickEventBuilder};
 
 mod header;
 pub use header::{Header, HeaderBuilder};
+
+mod block;
+pub use block::Block;
 
 #[derive(Debug, Clone)]
 pub enum ParseError {
