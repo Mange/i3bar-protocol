@@ -2,6 +2,7 @@ extern crate libc;
 extern crate serde_json;
 
 use std::fmt;
+use std::str::FromStr;
 use super::ParseError;
 
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq)]
@@ -29,8 +30,10 @@ impl Default for Header {
     }
 }
 
-impl Header {
-    pub fn from_str(str: &str) -> Result<Header, ParseError> {
+impl FromStr for Header {
+    type Err = ParseError;
+
+    fn from_str(str: &str) -> Result<Header, ParseError> {
         let mut header: Header = serde_json::from_str(str)?;
 
         if header.stop_signal == 0 {
@@ -113,21 +116,21 @@ mod tests {
 
     #[test]
     fn it_serdes_headers() {
-        let header_json = r#"{"version":1,"stop_signal":10,"cont_signal":12,"click_events":true}"#;
-        let header = Header::from_str(header_json).expect("Could not parse Header");
+        let json = r#"{"version":1,"stop_signal":10,"cont_signal":12,"click_events":true}"#;
+        let header: Header = json.parse().expect("Could not parse Header");
 
         assert_eq!(header.version, 1);
         assert_eq!(header.click_events, true);
         assert_eq!(header.continue_signal, 12);
         assert_eq!(header.stop_signal, 10);
 
-        assert_eq!(header.to_string(), header_json);
+        assert_eq!(header.to_string(), json);
     }
 
     #[test]
     fn it_gets_sane_defaults_on_missing_fields_in_json() {
-        let header_json = r#"{"version":1}"#;
-        let header = Header::from_str(header_json).expect("Could not parse Header");
+        let json = r#"{"version":1}"#;
+        let header: Header = json.parse().expect("Could not parse Header");
 
         assert_eq!(header.version, 1);
         assert_eq!(header.click_events, false);

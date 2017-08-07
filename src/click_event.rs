@@ -1,6 +1,7 @@
 extern crate serde_json;
 
 use std::fmt;
+use std::str::FromStr;
 use super::{MouseButton, ParseError};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
@@ -12,11 +13,15 @@ pub struct ClickEvent {
     y: Option<u32>,
 }
 
-impl ClickEvent {
-    pub fn from_str(str: &str) -> Result<ClickEvent, ParseError> {
+impl FromStr for ClickEvent {
+    type Err = ParseError;
+
+    fn from_str(str: &str) -> Result<ClickEvent, ParseError> {
         serde_json::from_str(str).map_err(|e| e.into())
     }
+}
 
+impl ClickEvent {
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -125,7 +130,7 @@ mod tests {
     #[test]
     fn it_serdes_mouse_event() {
         let event_string = r#"{"name":"ethernet","instance":"eth0","button":1,"x":1320,"y":1400}"#;
-        let event = ClickEvent::from_str(event_string).expect("Failed to parse");
+        let event: ClickEvent = event_string.parse().expect("Failed to parse");
 
         assert_eq!(event.name(), "ethernet");
         assert_eq!(event.instance(), Some("eth0"));

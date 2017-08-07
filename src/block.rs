@@ -1,6 +1,7 @@
 extern crate serde_json;
 
 use std::fmt;
+use std::str::FromStr;
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use super::{ParseError, Markup, Alignment};
 
@@ -31,11 +32,15 @@ pub struct Block {
     separator_block_width: Option<u32>,
 }
 
-impl Block {
-    pub fn from_str(str: &str) -> Result<Block, ParseError> {
+impl FromStr for Block {
+    type Err = ParseError;
+
+    fn from_str(str: &str) -> Result<Block, ParseError> {
         serde_json::from_str(str).map_err(Into::into)
     }
+}
 
+impl Block {
     pub fn full_text(&self) -> &str {
         &self.full_text
     }
@@ -216,7 +221,7 @@ mod tests {
     #[test]
     fn it_parses_minimal_block() {
         let json = r#"{"full_text":"E: 10.0.0.1 (1000 Mbit/s)"}"#;
-        let block = Block::from_str(json).expect("Could not parse");
+        let block: Block = json.parse().expect("Could not parse");
 
         assert_eq!(block.full_text(), "E: 10.0.0.1 (1000 Mbit/s)");
         assert_eq!(block.name(), None);
