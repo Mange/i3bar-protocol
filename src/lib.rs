@@ -16,6 +16,9 @@ pub use mouse_button::MouseButton;
 mod click_event;
 pub use click_event::{ClickEvent, ClickEventBuilder};
 
+mod header;
+pub use header::{Header, HeaderBuilder};
+
 #[derive(Debug, Clone)]
 pub enum ParseError {
     ReadError(String),
